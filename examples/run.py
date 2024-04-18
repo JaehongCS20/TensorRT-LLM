@@ -222,6 +222,7 @@ def parse_input(tokenizer,
             with open(input_file, 'r', encoding='utf-8',
                       errors='replace') as txt_file:
                 input_text = txt_file.readlines()
+                print(f"\nInput Length: {len(input_text[0].split())}\n")
                 batch_input_ids = tokenizer(
                     input_text,
                     add_special_tokens=add_special_tokens,
@@ -278,6 +279,8 @@ def print_output(tokenizer,
                 output_text = tokenizer.decode(outputs)
                 print(
                     f'Output [Text {batch_idx} Beam {beam}]: \"{output_text}\"')
+                print(
+                    f'Output ids [Text {batch_idx} Beam {beam}]: \"{outputs}\"')
 
     output_ids = output_ids.reshape((-1, output_ids.size(2)))
 
@@ -555,7 +558,7 @@ def main(args):
         tensorrt_llm.profiler.stop("tmp")
 
         print(
-            f"batch_size: {len(batch_input_ids)}, avg latency of {ite} iterations: : {tensorrt_llm.profiler.elapsed_time_in_sec('tmp') / ite} sec"
+            f"batch_size: {len(batch_input_ids)}, avg latency of {ite} iterations: : {tensorrt_llm.profiler.elapsed_time_in_sec('tmp') / ite * 1000} ms"
         )
 
 
