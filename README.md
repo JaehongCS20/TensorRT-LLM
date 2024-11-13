@@ -16,6 +16,46 @@ TensorRT-LLM
 ---
 <div align="left">
 
+## How to use TensorRT-LLM for LLMServingSim
+
+This repo is modifed to generate performance model used in [LLMServingsim](https://github.com/casys-kaist/LLMServingSim).
+
+We used NVIDIA RTX 3090 and GPT as example model, you should modify the scripts and codes to your own device and model.
+
+For more technical issues while using TensorRT-LLM, refer to its original documentation and github.
+
+1. Git clone
+```bash
+git clone https://github.com/JaehongCS20/TensorRT-LLM.git
+cd TensorRT-LLM
+```
+2. Update submodule (ensure that git lfs is installed)
+```bash
+# installing git lfs (Optional)
+apt-get update && apt-get -y install git git-lfs
+git lfs install
+# Update the repo
+git submodule update --init --recursive
+git lfs pull
+```
+3. Make docker and run (modify run_docker.sh as your system configuration)
+```bash
+make -C docker release_build
+./run_docker.sh
+```
+4. Modify the code and build TensorRT-LLM form local code
+
+We used GPT for the example.
+```bash
+cd examples/gpt
+./make_gpt.sh
+```
+5. Run to generate performance model of LLMServingSim
+```bash
+./profile.sh
+python parse_csv.py
+```
+
 ## Latest News
 * [2024/10/22] New 📝 Step-by-step instructions on how to
 ✅ Optimize LLMs with NVIDIA TensorRT-LLM,
