@@ -69,16 +69,17 @@ def _parse_nvtx(model, i, o, to_file=False):
 
     # Step 7: Convert the results to a dictionary
     result_dict = result_df.set_index('Range')['Avg (ns)'].to_dict()
-    print(result_dict)  # Print the result dictionary for debugging
+    # print(result_dict)  # Print the result dictionary for debugging
     return result_dict
 
 
 
-def make_perf_model(model, max_i, max_o, to_file=True):
+def make_perf_model(hardware, model, max_i, max_o, to_file=True, append=False):
     """
     Calculates latencies for each iteration given input size (i) and output size (o).
 
     Args:
+        hardware (str): The hardware name used in trace generation.
         model (str): The model name used in the file naming convention.
         max_i (int): Maximum value for input size (i).
         max_o (int): Maximum value for output size (o).
@@ -101,17 +102,21 @@ def make_perf_model(model, max_i, max_o, to_file=True):
                 if previous_latency is not None:
                     iteration_latency = (v * o - previous_latency[k]) / o
                     results.append({
+                        "hardware" : hardware,
+                        "model": 'gpt3-6.7b',
                         "layer_name": k,
                         "input": 1,
                         "kv_cache": i+o-2,
-                        "latency(ns)": iteration_latency
+                        "latency(ns)": int(iteration_latency)
                     })
                 else:
                     results.append({
+                        "hardware": hardware,
+                        "model": 'gpt3-6.7b',
                         "layer_name": k,
                         "input": i,
                         "kv_cache": 0,
-                        "latency(ns)": v
+                        "latency(ns)": int(v)
                     })
 
             # Update previous latency for the next iteration
@@ -122,9 +127,16 @@ def make_perf_model(model, max_i, max_o, to_file=True):
 
     # Save to CSV if required
     if to_file:
-        results_file_path = f"perf_model/{model}.csv"
-        results_df.to_csv(results_file_path, index=False)
+        results_file_path = f"perf_model/{hardware}.csv"
+        if append:
+            mode = 'a'
+            header = False
+        else:
+            mode = 'w'
+            header = True
+        results_df.to_csv(results_file_path, mode=mode, header=header, index=False)
 
     return results_df
 
-make_perf_model('gpt', 2, 2, to_file=True)
+make_perf_model('RTX3090', 'gpt', 1, 1024, to_file=True)
+make_perf_model('RTX3090', 'gpt', 1024, 1, to_file=True, append=True)

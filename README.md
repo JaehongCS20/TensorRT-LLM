@@ -43,7 +43,7 @@ git lfs pull
 make -C docker release_build
 ./run_docker.sh
 ```
-4. Modify the code and build TensorRT-LLM form local code
+4. Build your TensorRT-LLM model
 
 We used GPT for the example.
 ```bash
