@@ -103,7 +103,7 @@ def make_perf_model(hardware, model, max_i, max_o, to_file=True, append=False):
                     iteration_latency = (v * o - previous_latency[k]) / o
                     results.append({
                         "hardware" : hardware,
-                        "model": 'gpt3-6.7b',
+                        "model": model,
                         "layer_name": k,
                         "input": 1,
                         "kv_cache": i+o-2,
@@ -112,7 +112,7 @@ def make_perf_model(hardware, model, max_i, max_o, to_file=True, append=False):
                 else:
                     results.append({
                         "hardware": hardware,
-                        "model": 'gpt3-6.7b',
+                        "model": model,
                         "layer_name": k,
                         "input": i,
                         "kv_cache": 0,
@@ -138,5 +138,5 @@ def make_perf_model(hardware, model, max_i, max_o, to_file=True, append=False):
 
     return results_df
 
-make_perf_model('RTX3090', 'gpt', 1, 1024, to_file=True)
-make_perf_model('RTX3090', 'gpt', 1024, 1, to_file=True, append=True)
+make_perf_model('RTX3090', 'gpt3-6.7b', 1, 1024, to_file=True)
+make_perf_model('RTX3090', 'gpt3-6.7b', 1024, 1, to_file=True, append=True)
